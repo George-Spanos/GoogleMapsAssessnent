@@ -1,0 +1,17 @@
+<ng-container *ngrxLet="markers$;let markers">
+  <agm-map #AgmMap [latitude]="lat" [longitude]="long" [zoom]="zoom" [agmDrawingManager]="drawing"
+           (mapReady)="logEvent('bounds changes')">
+    <agm-marker *ngFor="let marker of markers" [latitude]="marker.latitude" [longitude]="marker.longitude"
+    ></agm-marker>
+
+    <agm-drawing-manager #drawing="agmDrawingManager"
+                         (rectangleComplete)="afterDrawing($event)"
+                         [drawingControl]="managerOptions.drawingControl"
+                         [drawingControlOptions]="managerOptions.drawingControlOptions"
+                         [rectangleOptions]="managerOptions.rectangleControlOptions"
+                         [drawingMode]="managerOptions.drawingMode">
+    </agm-drawing-manager>
+  </agm-map>
+
+
+</ng-container>

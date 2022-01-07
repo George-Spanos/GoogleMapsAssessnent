@@ -1,14 +1,30 @@
 import { Injectable } from "@angular/core";
 import { COORDINATE_BOUNDARIES, Marker } from "@trg-assessment/domain";
-import { getRandomArbitrary } from "@trg-assessment/utils";
+import { getRandomArbitrary, getRandomInt } from "@trg-assessment/utils";
 import { Observable, of } from "rxjs";
 
 @Injectable()
 export class MarkerGeneratorService {
   private _initialNumberOfMarkers = 10;
+  private _minMarkersAfterDrawing = 9000;
+  private _maxMarkersAfterDrawing = 15000;
 
   public getInitialMarkers(): Observable<Marker[]> {
     return this.createMarkers(this._initialNumberOfMarkers);
+  }
+
+  public createDrawingMarkers(north: number, south: number, west: number, east: number): Observable<Marker[]> {
+    const markerCount = getRandomInt(this._minMarkersAfterDrawing, this._maxMarkersAfterDrawing);
+    return this.createMarkers(markerCount, {
+      latitude: {
+        max: north,
+        min: south
+      },
+      longitude: {
+        max: east,
+        min: west
+      }
+    });
   }
 
   private createMarkers(count: number, limits = COORDINATE_BOUNDARIES): Observable<Marker[]> {
@@ -22,7 +38,6 @@ export class MarkerGeneratorService {
     for (let i = 0; i < count; i++) {
       const latitude = getRandomArbitrary(limits.latitude.min, limits.latitude.max);
       const longitude = getRandomArbitrary(limits.longitude.min, limits.longitude.max);
-      console.log(latitude, longitude);
       markers.push({
         latitude,
         longitude

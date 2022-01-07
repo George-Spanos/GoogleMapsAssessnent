@@ -2,12 +2,12 @@ import { CoordinateLimits } from "./model";
 
 export const COORDINATE_BOUNDARIES: CoordinateLimits = {
   latitude: {
-    max:40,
+    max: 40,
     min: 38
   },
   longitude: {
     max: 23,
-    min: 19
+    min: 21
   }
 };
 
