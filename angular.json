@@ -1,6 +1,58 @@
 {
   "version": 1,
   "projects": {
+    "domain": {
+      "projectType": "library",
+      "root": "libs/domain",
+      "sourceRoot": "libs/domain/src",
+      "prefix": "trg-assessment",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/domain"],
+          "options": {
+            "jestConfig": "libs/domain/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/domain/src/**/*.ts",
+              "libs/domain/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["scope:shared"]
+    },
+    "feature-markers": {
+      "projectType": "library",
+      "root": "libs/feature-markers",
+      "sourceRoot": "libs/feature-markers/src",
+      "prefix": "trg-assessment",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/feature-markers"],
+          "options": {
+            "jestConfig": "libs/feature-markers/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/feature-markers/src/**/*.ts",
+              "libs/feature-markers/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["scope:feature"]
+    },
     "map-overlay": {
       "projectType": "application",
       "root": "apps/map-overlay",
@@ -9,9 +61,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/map-overlay",
             "index": "apps/map-overlay/src/index.html",
@@ -92,16 +142,14 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/map-overlay"
-          ],
+          "outputs": ["coverage/apps/map-overlay"],
           "options": {
             "jestConfig": "apps/map-overlay/jest.config.js",
             "passWithNoTests": true
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client"]
     },
     "map-overlay-e2e": {
       "root": "apps/map-overlay-e2e",
@@ -122,20 +170,40 @@
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "apps/map-overlay-e2e/**/*.{js,ts}"
-            ]
+            "lintFilePatterns": ["apps/map-overlay-e2e/**/*.{js,ts}"]
           }
         }
       },
       "tags": [],
-      "implicitDependencies": [
-        "map-overlay"
-      ]
+      "implicitDependencies": ["map-overlay"]
+    },
+    "utils": {
+      "projectType": "library",
+      "root": "libs/utils",
+      "sourceRoot": "libs/utils/src",
+      "prefix": "trg-assessment",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/utils"],
+          "options": {
+            "jestConfig": "libs/utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/utils/src/**/*.ts",
+              "libs/utils/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["scope:shared"]
     }
   }
 }

@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@trg-assessment/domain": ["libs/domain/src/index.ts"],
+      "@trg-assessment/feature-markers": ["libs/feature-markers/src/index.ts"],
+      "@trg-assessment/utils": ["libs/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

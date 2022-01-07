@@ -1,20 +1,26 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { AgmMap } from "@agm/core";
+import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
+import { ATHENS_COORDINATES, Marker } from "@trg-assessment/domain";
+import { Observable, Subject } from "rxjs";
 
 @Component({
-  selector: 'trg-assessment-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: "trg-assessment-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"]
 })
-export class AppComponent implements AfterViewInit {
-  @ViewChild('AgmMap') map!: AgmMap;
-  title = 'My first AGM project';
-  lat = 51.678418;
-  lng = 7.809007;
+export class AppComponent implements OnInit {
+  @ViewChild("AgmMap") map!: AgmMap;
+  markers$: Observable<Marker[]>= new Subject();
+  lat!: number;
+  long!: number;
 
-  public ngAfterViewInit() {
+  constructor(private markerService: MarkerGeneratorService) {
+  }
 
-    this.map.mapReady.subscribe((map: AgmMap) => {
-    });
+  public ngOnInit() {
+    this.markers$ = this.markerService.getInitialMarkers();
+    this.lat = ATHENS_COORDINATES.latitude;
+    this.long = ATHENS_COORDINATES.longitude;
   }
 }
