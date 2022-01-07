@@ -1,5 +1,5 @@
 {
-  "name": "trg-assesment",
+  "name": "trg-assessment",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -11,11 +11,15 @@
   },
   "private": true,
   "dependencies": {
+    "@agm/core": "^3.0.0-beta.0",
+    "@agm/drawing": "^3.0.0-beta.0",
     "@angular/animations": "~13.1.0",
+    "@angular/cdk": "^13.1.1",
     "@angular/common": "~13.1.0",
     "@angular/compiler": "~13.1.0",
     "@angular/core": "~13.1.0",
     "@angular/forms": "~13.1.0",
+    "@angular/material": "^13.1.1",
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
