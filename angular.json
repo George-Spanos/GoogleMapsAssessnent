@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "projects": {
+    "map-overlay": {
+      "projectType": "application",
+      "root": "apps/map-overlay",
+      "sourceRoot": "apps/map-overlay/src",
+      "prefix": "trg-assesment",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/map-overlay",
+            "index": "apps/map-overlay/src/index.html",
+            "main": "apps/map-overlay/src/main.ts",
+            "polyfills": "apps/map-overlay/src/polyfills.ts",
+            "tsConfig": "apps/map-overlay/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/map-overlay/src/favicon.ico",
+              "apps/map-overlay/src/assets"
+            ],
+            "styles": ["apps/map-overlay/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/map-overlay/src/environments/environment.ts",
+                  "with": "apps/map-overlay/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "map-overlay:build:production"
+            },
+            "development": {
+              "browserTarget": "map-overlay:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "map-overlay:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/map-overlay/src/**/*.ts",
+              "apps/map-overlay/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/map-overlay"],
+          "options": {
+            "jestConfig": "apps/map-overlay/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "map-overlay-e2e": {
+      "root": "apps/map-overlay-e2e",
+      "sourceRoot": "apps/map-overlay-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/map-overlay-e2e/cypress.json",
+            "devServerTarget": "map-overlay:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "map-overlay:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/map-overlay-e2e/**/*.{js,ts}"]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": ["map-overlay"]
+    }
+  }
+}
