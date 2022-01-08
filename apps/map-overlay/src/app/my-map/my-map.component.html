@@ -7,16 +7,6 @@
     [center]="center"
     [options]="options"
   >
-    <map-marker
-      #markerElem
-      *ngFor="let marker of markers;  trackBy: trackByIndex"
-      [position]="marker.position"
-      [label]="marker.label"
-      [title]="marker.title"
-      [options]="marker.options"
-      (mapClick)="openInfo(markerElem, marker.label)"
-    ></map-marker>
-    <map-info-window>{{ infoContent }}</map-info-window>
   </google-map>
 
 </ng-container>

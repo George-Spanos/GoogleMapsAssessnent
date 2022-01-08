@@ -12,6 +12,7 @@ export interface CoordinateLimits {
 }
 
 export interface Marker {
+  isLast: boolean;
   position: google.maps.LatLngLiteral | google.maps.LatLng;
   label: string | google.maps.MarkerLabel;
   title: string;

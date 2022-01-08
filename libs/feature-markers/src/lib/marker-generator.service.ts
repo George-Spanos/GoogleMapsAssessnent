@@ -1,19 +1,18 @@
 import { Injectable } from "@angular/core";
 import { COORDINATE_BOUNDARIES, Marker } from "@trg-assessment/domain";
 import { getRandomArbitrary, getRandomInt } from "@trg-assessment/utils";
-import { Observable, of } from "rxjs";
 
 @Injectable()
 export class MarkerGeneratorService {
   private _initialNumberOfMarkers = 10;
-  private _minMarkersAfterDrawing = 9000;
-  private _maxMarkersAfterDrawing = 15000;
+  private _minMarkersAfterDrawing = 900;
+  private _maxMarkersAfterDrawing = 1500;
 
-  public getInitialMarkers(): Observable<Marker[]> {
+  public getInitialMarkers(): Marker[] {
     return this.createMarkers(this._initialNumberOfMarkers);
   }
 
-  public createDrawingMarkers(north: number, south: number, west: number, east: number): Observable<Marker[]> {
+  public createDrawingMarkers(north: number, south: number, west: number, east: number): Marker[] {
     const markerCount = getRandomInt(this._minMarkersAfterDrawing, this._maxMarkersAfterDrawing);
     return this.createMarkers(markerCount, {
       latitude: {
@@ -27,7 +26,7 @@ export class MarkerGeneratorService {
     });
   }
 
-  private createMarkers(count: number, limits = COORDINATE_BOUNDARIES): Observable<Marker[]> {
+  private createMarkers(count: number, limits = COORDINATE_BOUNDARIES): Marker[] {
 
     // Since we for strict linting on the whole project, the compiler should stop any "count" that is not a number
     // so can skip the error check below
@@ -45,9 +44,10 @@ export class MarkerGeneratorService {
         },
         label: (i + 1).toString(),
         title: i.toString() + new Date().toDateString(),
-        options: {}
+        options: {},
+        isLast: i === count - 1
       });
     }
-    return of(markers);
+    return markers;
   }
 }

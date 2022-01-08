@@ -1,5 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import { BehaviorSubject, Observable, share, take, tap } from "rxjs";
+import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { BehaviorSubject, Observable, tap } from "rxjs";
 import { Marker } from "@trg-assessment/domain";
 import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
@@ -15,7 +15,8 @@ export class MyMapComponent implements AfterViewInit {
   @ViewChild(MapInfoWindow, { static: false }) info!: MapInfoWindow;
   infoContent = "";
   drawingManager: google.maps.drawing.DrawingManager | undefined;
-  markers$: Observable<Marker[]> = new BehaviorSubject([]);
+  private _markers$: BehaviorSubject<Marker[]> = new BehaviorSubject<Marker[]>(this.markerService.getInitialMarkers());
+  markers$: Observable<Marker[]> = this._markers$.asObservable();
   lat!: number;
   long!: number;
   zoom = 7;
@@ -31,20 +32,19 @@ export class MyMapComponent implements AfterViewInit {
 
 
   public ngAfterViewInit() {
-    this.markers$ = this.markerService.getInitialMarkers().pipe(take(1), tap(() => {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-      });
-      this.initializeDrawing();
-    }), tap(
-      () => {
-        this.toastr.success("Pins Rendered");
-      }
-    ));
-
+    let k = 0;
+    navigator.geolocation.getCurrentPosition(position => {
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+    });
+    this.initializeDrawing();
+    this.markers$ = this._markers$.pipe(tap((markers) => markers.forEach(m => this.renderMarker(m))));
+    this.map.googleMap?.addListener('change',() => {
+      console.log("map changed", k)
+      k++;
+    })
   }
 
   afterDrawing(rectangle: google.maps.Rectangle) {
@@ -57,13 +57,7 @@ export class MyMapComponent implements AfterViewInit {
       const east = NE.lng();
       const south = SW.lat();
       const west = SW.lng();
-      this.markers$ = this.markerService.createDrawingMarkers(north, south, west, east).pipe(tap(
-          () => {
-            this.toastr.success("Pins Rendered");
-          }
-        )
-      )
-      ;
+      this._markers$.next(this.markerService.createDrawingMarkers(north, south, west, east));
     }
 
   }
@@ -89,7 +83,14 @@ export class MyMapComponent implements AfterViewInit {
     if (this.map?.googleMap) {
       this.drawingManager.setMap(this.map.googleMap);
       google.maps.event.addListener(this.drawingManager, "rectanglecomplete", (event: google.maps.Rectangle) => {
+        const startTime = performance.now();
         this.afterDrawing(event);
+        const endTime = performance.now();
+        console.log(endTime - startTime);
+        // Console Memory is not on the official api
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        console.log(console.memory);
       });
     }
   }
@@ -101,5 +102,25 @@ export class MyMapComponent implements AfterViewInit {
 
   trackByIndex(index: number, item: any) {
     return index;
+  }
+
+  private renderMarker(marker: Marker) {
+    const newMarker = new google.maps.Marker({
+      position: marker.position,
+      map: this.map.googleMap,
+      label: marker.label,
+      title: marker.title,
+      optimized: true
+    });
+    const infoWindow = new google.maps.InfoWindow({
+      content: new Date().getTime() + " " + marker.label
+    });
+    newMarker.addListener("click", (() => {
+      infoWindow.open({
+        anchor: newMarker,
+        map: this.map.googleMap,
+        shouldFocus: false
+      });
+    }));
   }
 }
