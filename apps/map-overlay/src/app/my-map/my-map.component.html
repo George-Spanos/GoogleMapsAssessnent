@@ -1,17 +1,22 @@
 <ng-container *ngrxLet="markers$;let markers">
-  <agm-map #AgmMap [latitude]="lat" [longitude]="long" [zoom]="zoom" [agmDrawingManager]="drawing"
-           (mapReady)="logEvent('bounds changes')">
-    <agm-marker *ngFor="let marker of markers" [latitude]="marker.latitude" [longitude]="marker.longitude"
-    ></agm-marker>
-
-    <agm-drawing-manager #drawing="agmDrawingManager"
-                         (rectangleComplete)="afterDrawing($event)"
-                         [drawingControl]="managerOptions.drawingControl"
-                         [drawingControlOptions]="managerOptions.drawingControlOptions"
-                         [rectangleOptions]="managerOptions.rectangleControlOptions"
-                         [drawingMode]="managerOptions.drawingMode">
-    </agm-drawing-manager>
-  </agm-map>
-
+  <google-map
+    #map
+    height="90vh"
+    width="100%"
+    [zoom]="zoom"
+    [center]="center"
+    [options]="options"
+  >
+    <map-marker
+      #markerElem
+      *ngFor="let marker of markers;  trackBy: trackByIndex"
+      [position]="marker.position"
+      [label]="marker.label"
+      [title]="marker.title"
+      [options]="marker.options"
+      (mapClick)="openInfo(markerElem, marker.label)"
+    ></map-marker>
+    <map-info-window>{{ infoContent }}</map-info-window>
+  </google-map>
 
 </ng-container>

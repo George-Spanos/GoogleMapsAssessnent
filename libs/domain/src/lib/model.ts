@@ -1,3 +1,5 @@
+import "@angular/google-maps";
+
 export interface CoordinateLimits {
   latitude: {
     max: number,
@@ -10,6 +12,8 @@ export interface CoordinateLimits {
 }
 
 export interface Marker {
-  latitude: number;
-  longitude: number;
+  position: google.maps.LatLngLiteral | google.maps.LatLng;
+  label: string | google.maps.MarkerLabel;
+  title: string;
+  options: google.maps.MarkerOptions;
 }

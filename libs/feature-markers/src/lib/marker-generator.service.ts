@@ -36,11 +36,16 @@ export class MarkerGeneratorService {
     const markers: Marker[] = [];
 
     for (let i = 0; i < count; i++) {
-      const latitude = getRandomArbitrary(limits.latitude.min, limits.latitude.max);
-      const longitude = getRandomArbitrary(limits.longitude.min, limits.longitude.max);
+      const lat = getRandomArbitrary(limits.latitude.min, limits.latitude.max);
+      const lng = getRandomArbitrary(limits.longitude.min, limits.longitude.max);
       markers.push({
-        latitude,
-        longitude
+        position: {
+          lat,
+          lng
+        },
+        label: (i + 1).toString(),
+        title: i.toString() + new Date().toDateString(),
+        options: {}
       });
     }
     return of(markers);

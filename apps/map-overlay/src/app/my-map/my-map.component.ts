@@ -1,40 +1,46 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
-import { AgmMap } from "@agm/core";
-import { Observable, Subject } from "rxjs";
-import { ATHENS_COORDINATES, Marker } from "@trg-assessment/domain";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
+import { BehaviorSubject, Observable, share, tap } from "rxjs";
+import { Marker } from "@trg-assessment/domain";
 import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
+import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+
 @Component({
   selector: "trg-assessment-my-map",
   templateUrl: "./my-map.component.html",
-  styleUrls: ["./my-map.component.scss"],
-  encapsulation: ViewEncapsulation.Emulated
+  styleUrls: ["./my-map.component.scss"]
 })
-export class MyMapComponent implements OnInit {
-  @ViewChild("AgmMap") map!: AgmMap;
-  markers$: Observable<Marker[]> = new Subject();
+export class MyMapComponent implements AfterViewInit {
+  @ViewChild("map") map!: GoogleMap;
+  @ViewChild(MapInfoWindow, { static: false }) info!: MapInfoWindow;
+  infoContent = "";
+  drawingManager: google.maps.drawing.DrawingManager | undefined;
+  markers$: Observable<Marker[]> = new BehaviorSubject([]);
   lat!: number;
   long!: number;
   zoom = 7;
-
-  managerOptions = {
-    drawingControl: true,
-    drawingControlOptions: {
-      drawingModes: [google.maps.drawing.OverlayType.RECTANGLE]
-    },
-    rectangleControlOptions: {
-      draggable: true,
-      editable: true
-    },
-    drawingMode: google.maps.drawing.OverlayType.RECTANGLE
+  center!: google.maps.LatLngLiteral;
+  options: google.maps.MapOptions = {
+    zoomControl: true,
+    scrollwheel: true,
+    maxZoom: 15
   };
 
   constructor(private markerService: MarkerGeneratorService) {
   }
 
-  public ngOnInit() {
-    this.markers$ = this.markerService.getInitialMarkers();
-    this.lat = ATHENS_COORDINATES.latitude;
-    this.long = ATHENS_COORDINATES.longitude;
+
+  public ngAfterViewInit() {
+    this.markers$ = this.markerService.getInitialMarkers().pipe(tap(() => {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.center = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+        });
+        this.initializeDrawing();
+      }),
+      share());
+
   }
 
   afterDrawing(rectangle: google.maps.Rectangle) {
@@ -48,12 +54,42 @@ export class MyMapComponent implements OnInit {
       const south = SW.lat();
       const west = SW.lng();
       this.markers$ = this.markerService.createDrawingMarkers(north, south, west, east);
-
     }
 
   }
 
   logEvent(message: string) {
     console.log(message);
+  }
+
+  private initializeDrawing() {
+    this.drawingManager = new google.maps.drawing.DrawingManager({
+      drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [
+          google.maps.drawing.OverlayType.RECTANGLE
+        ]
+      },
+      polygonOptions: {
+        strokeColor: "#00ff00"
+      }
+    });
+    if (this.map?.googleMap) {
+      this.drawingManager.setMap(this.map.googleMap);
+      google.maps.event.addListener(this.drawingManager, "rectanglecomplete", (event: google.maps.Rectangle) => {
+        this.afterDrawing(event);
+      });
+    }
+  }
+
+  openInfo(marker: unknown, content: unknown) {
+    this.infoContent = content as string;
+    this.info.open(<MapMarker>marker);
+  }
+
+  trackByIndex(index: number, item: any) {
+    return index;
   }
 }
