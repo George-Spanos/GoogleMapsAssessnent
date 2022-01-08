@@ -1,12 +1,13 @@
-<ng-container *ngrxLet="markers$;let markers">
-  <google-map
-    #map
-    height="90vh"
-    width="100%"
-    [zoom]="zoom"
-    [center]="center"
-    [options]="options"
-  >
-  </google-map>
+<agm-map #map [latitude]="lat" [longitude]="long" [agmDrawingManager]="drawing">
+  <agm-marker-cluster [gridSize]="100" [minimumClusterSize]="5">
+    <ng-container *ngrxLet="markers$;let markers">
+      <agm-marker *ngFor="let marker of markers;trackBy: trackByIndex" [latitude]="marker.position.lat"
+                  [longitude]="marker.position.lng">
+      </agm-marker><!-- multiple markers -->
+    </ng-container>
+  </agm-marker-cluster>
+</agm-map>
+<agm-drawing-manager #drawing="agmDrawingManager"
+                     [drawingControlOptions]="drawingControlOptions"
+                     (rectangleComplete)="afterDrawingCompleted($event)"></agm-drawing-manager>
 
-</ng-container>

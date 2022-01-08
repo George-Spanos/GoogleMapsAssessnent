@@ -12,12 +12,12 @@ export interface CoordinateLimits {
 }
 
 export class Marker {
-  position: google.maps.LatLngLiteral | google.maps.LatLng;
+  position: google.maps.LatLngLiteral;
   label: string | google.maps.MarkerLabel;
   title: string;
   options: google.maps.MarkerOptions;
 
-  constructor(position: google.maps.LatLngLiteral | google.maps.LatLng,
+  constructor(position: google.maps.LatLngLiteral,
               label: string | google.maps.MarkerLabel,
               title: string,
               options: google.maps.MarkerOptions) {

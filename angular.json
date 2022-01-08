@@ -71,7 +71,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "apps/map-overlay/src/favicon.ico",
-              "apps/map-overlay/src/assets"
+              "apps/map-overlay/src/assets",
+              {"input": "./node_modules/@google/markerclustererplus/images", "glob": "*", "output": "/images"}
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
