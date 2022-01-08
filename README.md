@@ -2,7 +2,7 @@
 
 # TRG Assessment
 
-The goal of this project is to implement a map overlay for Google Maps.
+The goal of this project is to implement a map overlay for Google Maps. From my understanding, I cannot optimize the performance within 3 days of work. I have little experience working with the Google Maps Javascript API, so instead of trying to pursue performance optimization up to the last minute, I decided to devote the last of three days on code quality.
 
 ## Specs
 
@@ -26,7 +26,12 @@ timestamp the marker was generated.
 My goal is to break down the project as if it was a deliverable.
 
 ### Issues Faced and Solutions
+There are two branches that implement the solution based on different libraries. The first library is the [@agm](https://angular-maps.com/api-docs/agm-core/components/agmmap) and the second solution is based on the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps). Both libraries seem to perform about the same way. I tend to prefer the [@angular/google-maps] because it seems to me that handling map creation inside typescript and not HTML seems to be more performant.
+
 As it was expected the 9000-15000 markers are too much for a browser to render. I've done multiple steps to improve performance and there are of course much more to do:
+
+Both Solutions are base on Marker Clustering.
+
 1. At first a randomized amount of markers between 9 and 15 thousand was not even rendering. This improved by
    1. Choosing to use the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps) library since it proved to be more performant.
    2. Making sure that every marker has its flag ["optimize" set to true](https://developers.google.com/maps/optimization-guide#optimizing_markers).
