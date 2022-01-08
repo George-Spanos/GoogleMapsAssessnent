@@ -4,17 +4,18 @@ import { getRandomArbitrary, getRandomInt } from "@trg-assessment/utils";
 
 @Injectable()
 export class MarkerGeneratorService {
-  private _initialNumberOfMarkers = 10;
-  private _minMarkersAfterDrawing = 900;
-  private _maxMarkersAfterDrawing = 1500;
+  private _initialNumberOfMarkers = 100;
+  private _minMarkersAfterDrawing = 9000;
+  private _maxMarkersAfterDrawing = 15000;
+  pinCount: number = this._initialNumberOfMarkers;
 
   public getInitialMarkers(): Marker[] {
     return this.createMarkers(this._initialNumberOfMarkers);
   }
 
   public createDrawingMarkers(north: number, south: number, west: number, east: number): Marker[] {
-    const markerCount = getRandomInt(this._minMarkersAfterDrawing, this._maxMarkersAfterDrawing);
-    return this.createMarkers(markerCount, {
+    this.pinCount = getRandomInt(this._minMarkersAfterDrawing, this._maxMarkersAfterDrawing);
+    return this.createMarkers(this.pinCount, {
       latitude: {
         max: north,
         min: south
@@ -37,16 +38,7 @@ export class MarkerGeneratorService {
     for (let i = 0; i < count; i++) {
       const lat = getRandomArbitrary(limits.latitude.min, limits.latitude.max);
       const lng = getRandomArbitrary(limits.longitude.min, limits.longitude.max);
-      markers.push({
-        position: {
-          lat,
-          lng
-        },
-        label: (i + 1).toString(),
-        title: i.toString() + new Date().toDateString(),
-        options: {},
-        isLast: i === count - 1
-      });
+      markers.push(new Marker({ lat, lng }, (i + 1).toString(), i.toString() + new Date().toDateString(), {}));
     }
     return markers;
   }

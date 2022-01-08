@@ -1,107 +1,41 @@
 
 
-# Trgassessment
+# TRG Assessment
 
-This project was generated using [Nx](https://nx.dev).
+The goal of this project is to implement a map overlay for Google Maps.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+## Specs
 
-🔎 **Smart, Fast and Extensible Build System**
+You are requested to develop an Angular (v10+) based application that:
+* is map-centric over Google Maps (get a free API key here),
+* renders random geo-points (markers), on the map, inside a predefined geographic
+bounding box,
+* the app provides a toolbox, allowing the user to draw the bounding box
+* once the bounding box is drawn, the application renders a large volume of location points
+(pins),
+* the number of pins is random, between 9K - 15K
+* each pin is clickable. Once clicked, an info window pops-up with the coordinates, and the
+timestamp the marker was generated.
+* upon rendering completion, a dialog presents the following statistics
+  * number of pins
+  * elapsed time (start - end) of total rendering time
+  * total object (pin) memory allocation
 
-## Quick Start & Documentation
+## Mindset behind coding
 
-[Nx Documentation](https://nx.dev/angular)
+My goal is to break down the project as if it was a deliverable.
 
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
+### Issues Faced and Solutions
+As it was expected the 9000-15000 markers are too much for a browser to render. I've done multiple steps to improve performance and there are of course much more to do:
+1. At first a randomized amount of markers between 9 and 15 thousand was not even rendering. This improved by
+   1. Choosing to use the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps) library since it proved to be more performant.
+   2. Making sure that every marker has its flag ["optimize" set to true](https://developers.google.com/maps/optimization-guide#optimizing_markers).
+   3.  I create the markers programmatically, avoiding *ngFor loops. Event with TrackByFn they seem under-performant in relation to typescript (which translates to vanilla JavaScript).
+2. After the above changes, the map renders but was still unusable and the page crashed from an "out of memory" exception. So finally:
+   1. 1.The solution that I found on the internet and seems the post popular one is to use [Marker Clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering). Marker Clustering seems to solve the issue of performance to some extent. 
 
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
+### Known Issues
 
-## Adding capabilities to your workspace
-
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
-
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
-
-Below are our core plugins:
-
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
-
-There are also many [community plugins](https://nx.dev/community) you could add.
-
-## Generate an application
-
-Run `ng g @nrwl/angular:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@trg-assessment/mylib`.
-
-## Development server
-
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng g component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+1. As of right now, the application measures the JavaScript execution time and NOT the HTML render time. Even though performance is relatively good and the map is somehow usable, the time measured does not represent the time for rendering.
 
 
-
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
-
-AIzaSyCi64X0rqx5hZMSiXnwnN7EyftWZxSddTU
