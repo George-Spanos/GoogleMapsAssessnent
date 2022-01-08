@@ -76,6 +76,7 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "apps/map-overlay/src/reset.css",
+              "node_modules/ngx-toastr/toastr.css",
               "apps/map-overlay/src/styles.scss"
             ],
             "scripts": []

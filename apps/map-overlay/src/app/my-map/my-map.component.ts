@@ -1,8 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from "@angular/core";
-import { BehaviorSubject, Observable, share, tap } from "rxjs";
+import { BehaviorSubject, Observable, share, take, tap } from "rxjs";
 import { Marker } from "@trg-assessment/domain";
 import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "trg-assessment-my-map",
@@ -25,21 +26,24 @@ export class MyMapComponent implements AfterViewInit {
     maxZoom: 15
   };
 
-  constructor(private markerService: MarkerGeneratorService) {
+  constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService) {
   }
 
 
   public ngAfterViewInit() {
-    this.markers$ = this.markerService.getInitialMarkers().pipe(tap(() => {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.center = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-        });
-        this.initializeDrawing();
-      }),
-      share());
+    this.markers$ = this.markerService.getInitialMarkers().pipe(take(1), tap(() => {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+      });
+      this.initializeDrawing();
+    }), tap(
+      () => {
+        this.toastr.success("Pins Rendered");
+      }
+    ));
 
   }
 
@@ -53,7 +57,13 @@ export class MyMapComponent implements AfterViewInit {
       const east = NE.lng();
       const south = SW.lat();
       const west = SW.lng();
-      this.markers$ = this.markerService.createDrawingMarkers(north, south, west, east);
+      this.markers$ = this.markerService.createDrawingMarkers(north, south, west, east).pipe(tap(
+          () => {
+            this.toastr.success("Pins Rendered");
+          }
+        )
+      )
+      ;
     }
 
   }

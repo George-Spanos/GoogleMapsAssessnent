@@ -7,6 +7,7 @@ import { FeatureMarkersModule } from "@trg-assessment/feature-markers";
 import { ReactiveComponentModule } from "@ngrx/component";
 import { MyMapComponent } from "./my-map/my-map.component";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [AppComponent, MyMapComponent],
@@ -15,6 +16,7 @@ import { GoogleMapsModule } from "@angular/google-maps";
     GoogleMapsModule,
     BrowserAnimationsModule,
     FeatureMarkersModule,
+    ToastrModule.forRoot(),
     ReactiveComponentModule
   ],
   providers: [],
