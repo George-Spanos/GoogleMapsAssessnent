@@ -73,3 +73,12 @@
   <p>First Solution = AGM</p>
   <p>Second Solution = @angular/google-maps</p>
 </div>
+
+<h2>Conclusion and Roadmap</h2>
+<p>Within three days, this project is far from optimal. If I were to present the efficiency and differences between the
+  two libraries I would first:</p>
+<ul>
+  <li>Refactor each solution into its own library, including pieces of its logic all together and exposing just a module, to be loaded lazily.</li>
+  <li>I would enrich the Performance Service and probably move it to its own library, since PerformanceMonitor is definitely a feature-library</li>
+  <li>I would refactor reusable UI components like cards, toasts and dialogs into a shared-ui library, making them reusable.</li>
+</ul>

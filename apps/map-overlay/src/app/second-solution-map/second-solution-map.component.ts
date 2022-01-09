@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, ViewChild } from "@angular/core";
 import { BehaviorSubject, Observable, take, tap } from "rxjs";
-import { Marker } from "@trg-assessment/domain";
-import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
+import { Marker, PerformanceEntry } from "@trg-assessment/domain";
+import { MarkerGeneratorService, PerformanceHistoryService } from "@trg-assessment/feature-markers";
 import { GoogleMap, MapInfoWindow } from "@angular/google-maps";
 import { ToastrService } from "ngx-toastr";
 import { extractCoordinatesFromShape } from "@trg-assessment/shared-ui";
@@ -13,7 +13,7 @@ import { roughSizeOfObject } from "@trg-assessment/utils";
   templateUrl: "./second-solution-map.component.html",
   styleUrls: ["./second-solution-map.component.scss"]
 })
-export class SecondSolutionMapComponent implements AfterViewInit {
+export class SecondSolutionMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild("map", { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) info!: MapInfoWindow;
   drawingManager: google.maps.drawing.DrawingManager | undefined;
@@ -32,7 +32,7 @@ export class SecondSolutionMapComponent implements AfterViewInit {
   start = 0;
   end = 0;
 
-  constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService) {
+  constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService, private performanceService: PerformanceHistoryService) {
   }
 
 
@@ -48,17 +48,23 @@ export class SecondSolutionMapComponent implements AfterViewInit {
       this.markers$ = this._markers$.pipe(tap((markers) => {
         this.start = performance.now();
         this.renderMarkerCluster(markers);
-        const toast = this.toastr.info(`
-      <div>Pin Count: ${this.markerService.pinCount}</div>
-      <div>Object Size: ${roughSizeOfObject(markers)}</div>
-      `, "After render", { enableHtml: true });
-        toast.onShown.pipe(take(1)).subscribe(() => {
-          this.end = performance.now();
-          this.printTimeSpent();
-        });
+        if (markers.length !== this.markerService._initialNumberOfMarkers) {
+          const toast = this.toastr.info(`
+          <div>Pin Count: ${this.markerService.pinCount}</div>
+          <div>Object Size: ${roughSizeOfObject(markers)}</div>
+            `, "After render", { enableHtml: true });
+          toast.onShown.pipe(take(1)).subscribe(() => {
+            this.end = performance.now();
+            this.printTimeSpent();
+          });
+        }
       }));
     }
 
+  }
+
+  public ngOnDestroy(): void {
+    this.markerService.pinCount = 0;
   }
 
   afterDrawingCompleted(rectangle: google.maps.Rectangle) {
@@ -124,10 +130,19 @@ export class SecondSolutionMapComponent implements AfterViewInit {
   }
 
   private printTimeSpent() {
+    const timeRendering = ((this.end - this.start) / 1000).toFixed(2);
+    const newEntry = new PerformanceEntry(
+      this.markerService.pinCount,
+      roughSizeOfObject(this._markers$.getValue()),
+      new Date(),
+      timeRendering,
+      "second");
+    this.performanceService.addEntry(newEntry);
     this.toastr.info(`
     <div>Time executing: ${((this.end - this.start) / 1000).toFixed(2)}</div>
     `, "Time Spent", { enableHtml: true });
   }
 
   //#endregion
+
 }

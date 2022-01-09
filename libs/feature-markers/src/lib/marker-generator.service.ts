@@ -4,7 +4,7 @@ import { getRandomArbitrary, getRandomInt } from "@trg-assessment/utils";
 
 @Injectable()
 export class MarkerGeneratorService {
-  private _initialNumberOfMarkers = 100;
+  public readonly _initialNumberOfMarkers = 100;
   private _minMarkersAfterDrawing = 9000;
   private _maxMarkersAfterDrawing = 15000;
   pinCount: number = this._initialNumberOfMarkers;

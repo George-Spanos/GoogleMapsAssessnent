@@ -1,4 +1,4 @@
-import { CoordinateLimits } from "./model";
+import { CoordinateLimits } from "./coordinate-limits.model";
 
 export const COORDINATE_BOUNDARIES: CoordinateLimits = {
   latitude: {

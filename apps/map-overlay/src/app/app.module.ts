@@ -19,6 +19,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { PerformanceHistoryComponent } from "./performance-history/performance-history.component";
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
   declarations: [AppComponent, FirstSolutionMapComponent, SecondSolutionMapComponent, HeaderComponent, HomeComponent, PerformanceHistoryComponent],
@@ -30,6 +31,7 @@ import { PerformanceHistoryComponent } from "./performance-history/performance-h
     FeatureMarkersModule,
     ToastrModule.forRoot(),
     ReactiveComponentModule,
+    MatCardModule,
     AgmCoreModule.forRoot({
       libraries: ["drawing"],
       apiKey: "AIzaSyCi64X0rqx5hZMSiXnwnN7EyftWZxSddTU"

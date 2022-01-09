@@ -37,4 +37,11 @@ As it was expected the 9000-15000 markers are too much for a browser to render. 
    3.  I create the markers programmatically, avoiding *ngFor loops. Event with TrackByFn they seem under-performant in relation to typescript (which translates to vanilla JavaScript).
 2. After the above changes, the map renders but was still unusable and the page crashed from an "out of memory" exception.
    1. The solution that I found on the internet and seems the post popular one is to use [Marker Clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering). With Marker Clustering the Angular Google Maps library (agm) seems to clearly outperform @angular/google-maps.
-   
+### Conclusion and Roadmap
+Within three days, this project is far from optimal. If I were to present the efficiency and differences between the
+two libraries I would first:
+
+* Refactor each solution into its own library, including pieces of its logic all together and exposing just a module, to be loaded lazily.
+* I would enrich the Performance Service and probably move it to its own library, since PerformanceMonitor is definitely a feature-library
+* I would refactor reusable UI components like cards, toasts and dialogs into a shared-ui library, making them reusable.
+

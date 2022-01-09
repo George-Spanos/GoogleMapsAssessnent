@@ -1,9 +1,9 @@
-import { Component, ViewChild, ViewEncapsulation } from "@angular/core";
+import { Component, OnDestroy, ViewChild, ViewEncapsulation } from "@angular/core";
 import { AgmMap } from "@agm/core";
 import { MapInfoWindow } from "@angular/google-maps";
 import { BehaviorSubject, Observable, take } from "rxjs";
-import { Marker } from "@trg-assessment/domain";
-import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
+import { Marker, PerformanceEntry } from "@trg-assessment/domain";
+import { MarkerGeneratorService, PerformanceHistoryService } from "@trg-assessment/feature-markers";
 import { ToastrService } from "ngx-toastr";
 import { extractCoordinatesFromShape } from "@trg-assessment/shared-ui";
 import { roughSizeOfObject } from "@trg-assessment/utils";
@@ -15,7 +15,7 @@ import ControlPosition = google.maps.ControlPosition;
   styleUrls: ["./first-solution-map.component.scss"],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class FirstSolutionMapComponent {
+export class FirstSolutionMapComponent implements OnDestroy {
 
   @ViewChild("map", { static: false }) map!: AgmMap;
   @ViewChild(MapInfoWindow, { static: false }) info!: MapInfoWindow;
@@ -30,7 +30,11 @@ export class FirstSolutionMapComponent {
     position: ControlPosition.TOP_CENTER
   };
 
-  constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService) {
+  public ngOnDestroy(): void {
+    this.markerService.pinCount = 0;
+  }
+
+  constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService, private performanceService: PerformanceHistoryService) {
     navigator.geolocation.getCurrentPosition(position => {
       this.lat = position.coords.latitude;
       this.long = position.coords.longitude;
@@ -61,8 +65,16 @@ export class FirstSolutionMapComponent {
   }
 
   printTimeSpent() {
+    const timeRendering = ((this.end - this.start) / 1000).toFixed(2);
+    const newEntry = new PerformanceEntry(
+      this.markerService.pinCount,
+      roughSizeOfObject(this._markers$.getValue()),
+      new Date(),
+      timeRendering,
+      "first");
+    this.performanceService.addEntry(newEntry);
     this.toastr.info(`
-    <div>Time spent: ${((this.end - this.start) / 1000).toFixed(2)} seconds</div>
+    <div>Time spent: ${timeRendering} seconds</div>
     `, "Time Spent", { enableHtml: true });
   }
 

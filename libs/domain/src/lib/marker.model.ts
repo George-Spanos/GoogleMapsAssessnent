@@ -1,22 +1,12 @@
 import "@angular/google-maps";
 
-export interface CoordinateLimits {
-  latitude: {
-    max: number,
-    min: number
-  },
-  longitude: {
-    max: number,
-    min: number
-  }
-}
-
 export class Marker {
   position: google.maps.LatLngLiteral;
   label: string | google.maps.MarkerLabel;
   title: string;
   options: google.maps.MarkerOptions;
   dateAdded: number;
+
   constructor(position: google.maps.LatLngLiteral,
               label: string | google.maps.MarkerLabel,
               title: string,
@@ -25,7 +15,7 @@ export class Marker {
     this.label = label;
     this.title = title;
     this.options = options;
-    this.dateAdded = new Date().getTime()
+    this.dateAdded = new Date().getTime();
   }
 
   toGoogleMarker(): google.maps.Marker {
