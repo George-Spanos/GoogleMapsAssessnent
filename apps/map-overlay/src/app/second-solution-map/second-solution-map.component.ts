@@ -10,8 +10,8 @@ import { roughSizeOfObject } from "@trg-assessment/utils";
 
 @Component({
   selector: "trg-assessment-my-map",
-  templateUrl: "./my-map.component.html",
-  styleUrls: ["./my-map.component.scss"]
+  templateUrl: "./second-solution-map.component.html",
+  styleUrls: ["./second-solution-map.component.scss"]
 })
 export class SecondSolutionMapComponent implements AfterViewInit {
   @ViewChild("map", { static: false }) map!: GoogleMap;
@@ -72,8 +72,6 @@ export class SecondSolutionMapComponent implements AfterViewInit {
   //#region private methods
   private initializeDrawingManager() {
     this.drawingManager = new google.maps.drawing.DrawingManager({
-      drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
-      drawingControl: true,
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
         drawingModes: [
@@ -103,6 +101,22 @@ export class SecondSolutionMapComponent implements AfterViewInit {
 
   private renderMarkerCluster(markers: Marker[]) {
     const newMarkers = markers.map(m => m.toGoogleMarker());
+    markers.forEach((marker, index) => {
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+           <div>Latitude: ${marker.position.lat}</div>
+          <div>Longitude: ${marker.position.lng}</div>
+          <div>Date Added: ${marker.dateAdded}</div>`
+      });
+      const googleMarker = newMarkers[index];
+      googleMarker.addListener("click", () => {
+        infoWindow.open({
+          anchor: googleMarker,
+          map: this.map.googleMap,
+          shouldFocus: false
+        });
+      });
+    });
     this._renderedCluster = new MarkerClusterer({
       markers: newMarkers,
       map: this.map.googleMap

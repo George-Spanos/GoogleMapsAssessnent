@@ -1,0 +1,16 @@
+:host {
+  display: block;
+
+  mat-toolbar {
+    span {
+      cursor: pointer;
+    }
+
+    display: flex;
+    justify-content: space-between;
+
+    * {
+      margin: 6px;
+    }
+  }
+}

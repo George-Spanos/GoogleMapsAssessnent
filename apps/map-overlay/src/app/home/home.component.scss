@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  padding: 1rem 1.5rem;
+
+  li {
+    font-size: 14px;
+    margin-left: 10px;
+    list-style-type: circle;
+  }
+
+  > ul {
+    margin: 1rem;
+  }
+}

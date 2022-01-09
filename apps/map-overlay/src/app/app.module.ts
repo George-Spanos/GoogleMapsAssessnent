@@ -12,11 +12,19 @@ import { AgmMarkerClustererModule } from "@agm/markerclusterer";
 import { AgmDrawingModule } from "@agm/drawing";
 import { FirstSolutionMapComponent } from "./first-solution-map/first-solution-map.component";
 import { SecondSolutionMapComponent } from "./second-solution-map/second-solution-map.component";
+import { HeaderComponent } from "./header/header.component";
+import { HomeComponent } from "./home/home.component";
+import { AppRoutingModule } from "./app.routing.module";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { PerformanceHistoryComponent } from "./performance-history/performance-history.component";
 
 @NgModule({
-  declarations: [AppComponent, FirstSolutionMapComponent, SecondSolutionMapComponent],
+  declarations: [AppComponent, FirstSolutionMapComponent, SecondSolutionMapComponent, HeaderComponent, HomeComponent, PerformanceHistoryComponent],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     GoogleMapsModule,
     BrowserAnimationsModule,
     FeatureMarkersModule,
@@ -27,7 +35,8 @@ import { SecondSolutionMapComponent } from "./second-solution-map/second-solutio
       apiKey: "AIzaSyCi64X0rqx5hZMSiXnwnN7EyftWZxSddTU"
     }),
     AgmDrawingModule,
-    AgmMarkerClustererModule
+    AgmMarkerClustererModule,
+    MatToolbarModule, MatIconModule, MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

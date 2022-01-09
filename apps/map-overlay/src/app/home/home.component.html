@@ -1,0 +1,75 @@
+<h1 id="trg-assessment">TRG Assessment</h1>
+<p>The goal of this project is to implement a map overlay for Google Maps. The focus is primarily on performance and
+  since
+  I have little experience working with the Google Maps Javascript API, I tried to make this work with either <a
+    href="https://www.npmjs.com/package/@angular/google-maps">@angular/google-maps</a> and <a
+    href="https://angular-maps.com/">agm</a>.</p>
+<h2 id="specs">TRG Requirements</h2>
+<p>You are requested to develop an Angular (v10+) based application that:
+<ul>
+  <li>is map-centric over Google Maps (get a free API key here)</li>
+  <li>renders random geo-points (markers), on the map, inside a predefined geographic bounding box</li>
+  <li>the app provides a toolbox, allowing the user to draw the bounding box</li>
+  <li>once the bounding box is drawn, the application renders a large volume of location points (pins)</li>
+  <li>the number of pins is random, between 9K - 15K</li>
+  <li>each pin is clickable. Once clicked, an info window pops-up with the coordinates, and the timestamp the marker was
+    generated.
+  </li>
+  <li>upon rendering completion, a dialog presents the following statistics
+    <ul>
+      <li>number of pins</li>
+      <li>elapsed time (start - end) of
+        total rendering time
+      </li>
+      <li>total object (pin) memory allocation</li>
+    </ul>
+  </li>
+</ul>
+<h2 id="issues-faced-and-solutions">Issues Faced</h2>
+<p>There are two branches that implement the solution based on different libraries. The first library is the <a
+  href="https://angular-maps.com/api-docs/agm-core/components/agmmap">agm</a> and the second solution is based on the <a
+  href="https://www.npmjs.com/package/">@angular/google-maps</a>.</p>
+<p>As it was expected the 9000-15000 markers are too much for a browser to render. I’ve done multiple steps to improve
+  performance and there are of course much more to do:</p>
+<ul type="1">
+  <li>At first a randomized amount of markers between 9 and 15 thousand was not even rendering. This improved by
+    <ul type="1">
+      <li>Choosing to use the <a href="https://www.npmjs.com/package">@angular/google-maps</a> library since it proved
+        to be more performant for rendering thousands of markers due to the fact that they get rendered progressively.
+      </li>
+      <li>Making sure that every marker has its flag <a
+        href="https://developers.google.com/maps/optimization-guide#optimizing_markers">“optimize” set to true</a>.
+      </li>
+      <li>I create the markers programmatically, avoiding *ngFor loops. Event with TrackByFn they seem under-performant
+        in relation to typescript (which translates to vanilla JavaScript).
+      </li>
+    </ul>
+  </li>
+  After the above changes, the map renders but was still unusable and the page crashed from an “out of memory”
+  exception.
+
+  <li>The solution that I found on the internet and seems the post popular one is to use <a
+    href="https://developers.google.com/maps/documentation/javascript/marker-clustering">Marker Clustering</a>. With
+    Marker Clustering the Angular Google Maps library <a
+      href="https://angular-maps.com/">(agm)</a> seems to clearly outperform <a
+      href="https://www.npmjs.com/package/@angular/google-maps">@angular/google-maps</a>
+    <a
+      href="https://angular-maps.com/">agm</a>
+
+</ul>
+<p>I ended up abandoning the idea of rendering all pins at the same time, since page was not responding even after
+  rendering all points</p>
+<h2>Solution - Marker Clustering</h2>
+<p>After the above changes, the map renders but was still unusable and the page crashed from an “out of memory”
+  exception.</p>
+<p>The solution that I found on the internet and seems the post popular one is to use <a
+  href="https://developers.google.com/maps/documentation/javascript/marker-clustering">Marker Clustering</a>. With
+  Marker Clustering the Angular Google Maps library <a
+    href="https://angular-maps.com/">(agm)</a> seems to clearly outperform <a
+    href="https://www.npmjs.com/package/@angular/google-maps">@angular/google-maps</a>
+  <a
+    href="https://angular-maps.com/">agm</a></p>
+<div class="mat-body-strong">
+  <p>First Solution = AGM</p>
+  <p>Second Solution = @angular/google-maps</p>
+</div>
