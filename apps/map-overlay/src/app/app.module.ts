@@ -5,15 +5,16 @@ import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FeatureMarkersModule } from "@trg-assessment/feature-markers";
 import { ReactiveComponentModule } from "@ngrx/component";
-import { MyMapComponent } from "./my-map/my-map.component";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { ToastrModule } from "ngx-toastr";
 import { AgmCoreModule } from "@agm/core";
 import { AgmMarkerClustererModule } from "@agm/markerclusterer";
 import { AgmDrawingModule } from "@agm/drawing";
+import { FirstSolutionMapComponent } from "./first-solution-map/first-solution-map.component";
+import { SecondSolutionMapComponent } from "./second-solution-map/second-solution-map.component";
 
 @NgModule({
-  declarations: [AppComponent, MyMapComponent],
+  declarations: [AppComponent, FirstSolutionMapComponent, SecondSolutionMapComponent],
   imports: [
     BrowserModule,
     GoogleMapsModule,

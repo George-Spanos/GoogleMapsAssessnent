@@ -1,21 +1,22 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, ViewEncapsulation } from "@angular/core";
+import { AgmMap } from "@agm/core";
+import { MapInfoWindow } from "@angular/google-maps";
 import { BehaviorSubject, Observable, take } from "rxjs";
 import { Marker } from "@trg-assessment/domain";
 import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
-import { MapInfoWindow } from "@angular/google-maps";
 import { ToastrService } from "ngx-toastr";
 import { extractCoordinatesFromShape } from "@trg-assessment/shared-ui";
-import { AgmMap } from "@agm/core";
 import { roughSizeOfObject } from "@trg-assessment/utils";
 import ControlPosition = google.maps.ControlPosition;
 
 @Component({
-  selector: "trg-assessment-my-map",
-  templateUrl: "./my-map.component.html",
-  styleUrls: ["./my-map.component.scss"]
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "trg-assessment-first-solution-map",
+  templateUrl: "./first-solution-map.component.html",
+  styleUrls: ["./first-solution-map.component.scss"],
+  encapsulation: ViewEncapsulation.Emulated
 })
-export class MyMapComponent {
+export class FirstSolutionMapComponent {
+
   @ViewChild("map", { static: false }) map!: AgmMap;
   @ViewChild(MapInfoWindow, { static: false }) info!: MapInfoWindow;
   private _markers$: BehaviorSubject<Marker[]> = new BehaviorSubject<Marker[]>(this.markerService.getInitialMarkers());
@@ -64,4 +65,5 @@ export class MyMapComponent {
     <div>Time spent: ${((this.end - this.start) / 1000).toFixed(2)} seconds</div>
     `, "Time Spent", { enableHtml: true });
   }
+
 }
