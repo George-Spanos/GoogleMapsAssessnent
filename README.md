@@ -26,21 +26,15 @@ timestamp the marker was generated.
 My goal is to break down the project as if it was a deliverable.
 
 ### Issues Faced and Solutions
-There are two branches that implement the solution based on different libraries. The first library is the [@agm](https://angular-maps.com/api-docs/agm-core/components/agmmap) and the second solution is based on the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps). Both libraries seem to perform about the same way. I tend to prefer the [@angular/google-maps] because it seems to me that handling map creation inside typescript and not HTML seems to be more performant.
+There are two branches that implement the solution based on different libraries. The first library is the [@agm](https://angular-maps.com/api-docs/agm-core/components/agmmap) and the second solution is based on the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps).
 
 As it was expected the 9000-15000 markers are too much for a browser to render. I've done multiple steps to improve performance and there are of course much more to do:
 
-Both Solutions are base on Marker Clustering.
 
 1. At first a randomized amount of markers between 9 and 15 thousand was not even rendering. This improved by
-   1. Choosing to use the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps) library since it proved to be more performant.
+   1. Choosing to use the [@angular/google-maps](https://www.npmjs.com/package/@angular/google-maps) library since it proved to be more performant for rendering thousands of markers due to the fact that they get rendered progressively.
    2. Making sure that every marker has its flag ["optimize" set to true](https://developers.google.com/maps/optimization-guide#optimizing_markers).
    3.  I create the markers programmatically, avoiding *ngFor loops. Event with TrackByFn they seem under-performant in relation to typescript (which translates to vanilla JavaScript).
-2. After the above changes, the map renders but was still unusable and the page crashed from an "out of memory" exception. So finally:
-   1. 1.The solution that I found on the internet and seems the post popular one is to use [Marker Clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering). Marker Clustering seems to solve the issue of performance to some extent. 
-
-### Known Issues
-
-1. As of right now, the application measures the JavaScript execution time and NOT the HTML render time. Even though performance is relatively good and the map is somehow usable, the time measured does not represent the time for rendering.
-
-
+2. After the above changes, the map renders but was still unusable and the page crashed from an "out of memory" exception.
+   1. The solution that I found on the internet and seems the post popular one is to use [Marker Clustering](https://developers.google.com/maps/documentation/javascript/marker-clustering). With Marker Clustering the Angular Google Maps library (agm) seems to clearly outperform @angular/google-maps.
+   
