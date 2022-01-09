@@ -2,10 +2,18 @@
   <agm-marker-cluster [gridSize]="100" [minimumClusterSize]="5">
     <ng-container *ngrxLet="markers$;let markers">
       <agm-marker *ngFor="let marker of markers;trackBy: trackByIndex" [latitude]="marker.position.lat"
+                  (markerClick)="infoWindow.open()"
                   [longitude]="marker.position.lng">
-      </agm-marker><!-- multiple markers -->
+        <agm-info-window [disableAutoPan]="true" #infoWindow>
+          <div>Latitude: {{marker.position.lat}}</div>
+          <div>Longitude: {{marker.position.lng}}</div>
+          <div>Date Added: {{marker.dateAdded}}</div>
+          {{marker.label}}
+        </agm-info-window>
+      </agm-marker>
     </ng-container>
   </agm-marker-cluster>
+
 </agm-map>
 <agm-drawing-manager #drawing="agmDrawingManager"
                      [drawingControlOptions]="drawingControlOptions"

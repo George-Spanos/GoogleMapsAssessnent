@@ -16,7 +16,7 @@ export class Marker {
   label: string | google.maps.MarkerLabel;
   title: string;
   options: google.maps.MarkerOptions;
-
+  dateAdded: number;
   constructor(position: google.maps.LatLngLiteral,
               label: string | google.maps.MarkerLabel,
               title: string,
@@ -25,6 +25,7 @@ export class Marker {
     this.label = label;
     this.title = title;
     this.options = options;
+    this.dateAdded = new Date().getTime()
   }
 
   toGoogleMarker(): google.maps.Marker {
