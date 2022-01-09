@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
-import { BehaviorSubject, Observable, tap } from "rxjs";
+import { BehaviorSubject, Observable, take, tap } from "rxjs";
 import { Marker } from "@trg-assessment/domain";
 import { MarkerGeneratorService } from "@trg-assessment/feature-markers";
 import { GoogleMap, MapInfoWindow } from "@angular/google-maps";
@@ -29,6 +29,8 @@ export class MyMapComponent implements AfterViewInit {
     scrollwheel: true,
     maxZoom: 15
   };
+  start = 0;
+  end = 0;
 
   constructor(private markerService: MarkerGeneratorService, private toastr: ToastrService) {
   }
@@ -36,9 +38,6 @@ export class MyMapComponent implements AfterViewInit {
 
   public ngAfterViewInit() {
     if (this.map.googleMap) {
-      // this.map.googleMap.addListener("idle", () => {
-      //   alert("map is idle");
-      // });
       navigator.geolocation.getCurrentPosition(position => {
         this.center = {
           lat: position.coords.latitude,
@@ -46,14 +45,17 @@ export class MyMapComponent implements AfterViewInit {
         };
       });
       this.initializeDrawingManager();
-      // this.markers$ = this._markers$.pipe(tap((markers) => markers.forEach(m => this.renderMarker(m))));
       this.markers$ = this._markers$.pipe(tap((markers) => {
-        const result = executeAndMeasureTimePerformance(this.renderMarkerCluster.bind(this), [markers]);
-        this.toastr.info(`
+        this.start = performance.now();
+        this.renderMarkerCluster(markers);
+        const toast = this.toastr.info(`
       <div>Pin Count: ${this.markerService.pinCount}</div>
-      <div>Time executing: ${result}</div>
       <div>Object Size: ${roughSizeOfObject(markers)}</div>
       `, "After render", { enableHtml: true });
+        toast.onShown.pipe(take(1)).subscribe(() => {
+          this.end = performance.now();
+          this.printTimeSpent();
+        });
       }));
     }
 
@@ -94,16 +96,6 @@ export class MyMapComponent implements AfterViewInit {
     return index;
   }
 
-  // Commented out since we chose to go with Marker Clusters due to performance issues
-  // private renderMarker(marker: Marker) {
-  //   if (!this.map?.googleMap) throw new Error("map in not found");
-  //
-  //   const newMarker = marker.attachToMap(this.map.googleMap);
-  //   const infoWindow = createInfoWindow(marker);
-  //   addInfoEventListener(infoWindow, newMarker, this.map.googleMap);
-  //   this._renderedMarkers.push(newMarker);
-  //
-  // }
 
   private clearMarkers() {
     this._renderedCluster?.clearMarkers();
@@ -117,6 +109,11 @@ export class MyMapComponent implements AfterViewInit {
     });
   }
 
+  private printTimeSpent() {
+    this.toastr.info(`
+    <div>Time executing: ${((this.end - this.start) / 1000).toFixed(2)}</div>
+    `, "Time Spent", { enableHtml: true });
+  }
 
   //#endregion
 }
