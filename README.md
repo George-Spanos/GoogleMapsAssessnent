@@ -1,6 +1,6 @@
 
 
-# Google Maps Assesment
+# Google Maps Assessment
 
 The goal of this project is to implement a map overlay for Google Maps. From my understanding, I cannot optimize the performance within 3 days of work. I have little experience working with the Google Maps Javascript API, so instead of trying to pursue performance optimization up to the last minute, I decided to devote the last of three days on code quality.
 
